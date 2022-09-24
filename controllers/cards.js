@@ -24,17 +24,15 @@ const deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
     .orFail(notFound)
     .then(() => {
-      Card.remove({ _id: req.params.cardId }).then(() => {
-        res.send({ message: "Карточка удалена" });
-      });
+      Card.remove({ _id: req.params.cardId })
+        .then(() => {
+          res.send({ message: "Карточка удалена" });
+        })
+        .catch((err) => validationError(err, res));
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        defaultError(res);
-        return;
-      }
       notFoundError(err, res);
-      defaultError(res);
+      validationError(err, res);
     });
 };
 
@@ -45,13 +43,15 @@ const likeCard = (req, res) => {
       Card.updateOne(
         { _id: req.params.cardId },
         { $addToSet: { likes: req.user._id } }
-      ).then(() => {
-        Card.findById(req.params.cardId).then((card) => res.send(card));
-      });
+      )
+        .then(() => {
+          Card.findById(req.params.cardId).then((card) => res.send(card));
+        })
+        .catch((err) => validationError(err, res));
     })
     .catch((err) => {
       notFoundError(err, res);
-      defaultError(res);
+      validationError(err, res);
     });
 };
 
@@ -62,13 +62,15 @@ const dislikeCard = (req, res) => {
       Card.updateOne(
         { _id: req.params.cardId },
         { $pull: { likes: req.user._id } }
-      ).then(() => {
-        Card.findById(req.params.cardId).then((card) => res.send(card));
-      });
+      )
+        .then(() => {
+          Card.findById(req.params.cardId).then((card) => res.send(card));
+        })
+        .catch((err) => validationError(err, res));
     })
     .catch((err) => {
       notFoundError(err, res);
-      defaultError(res);
+      validationError(err, res);
     });
 };
 

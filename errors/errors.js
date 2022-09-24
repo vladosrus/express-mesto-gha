@@ -5,6 +5,10 @@ const defaultError = (res) => {
 const validationError = (err, res) => {
   if (err.name === "ValidationError") {
     res.status(400).send({ message: "Переданы некорректные данные" });
+  } else if (err.name === "CastError") {
+    res.status(400).send({ message: "Переданы некорректные данные" });
+  } else {
+    defaultError(res);
   }
 };
 

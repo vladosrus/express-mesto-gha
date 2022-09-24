@@ -14,6 +14,7 @@ const routerAvatar = require("./routes/avatar");
 const routerCards = require("./routes/cards");
 const routerCardId = require("./routes/cardId");
 const routerLikes = require("./routes/likes");
+const routerError = require("./routes/error");
 
 // Подключение к серверу mongoDB
 mongoose.connect(MONGODB_URL, {
@@ -39,5 +40,8 @@ app.use("/users/me/avatar", routerAvatar);
 app.use("/cards", routerCards);
 app.use("/", routerCardId);
 app.use("/", routerLikes);
+
+// Обработка неправильного пути
+app.use("*", routerError);
 
 app.listen(PORT);

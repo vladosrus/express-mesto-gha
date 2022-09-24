@@ -27,8 +27,8 @@ const getUser = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
+      validationError(err, res);
       notFoundError(err, res);
-      defaultError(res);
     });
 };
 
@@ -39,14 +39,18 @@ const updateUser = (req, res) => {
       User.updateOne(
         { _id: req.user._id },
         { $set: { name: req.body.name, about: req.body.about } },
-      ).then(() => {
-        User.findById(req.user._id).then((user) => res.send(user));
-      });
+        { runValidators: true }
+      )
+        .then(() => {
+          User.findById(req.user._id).then((user) => res.send(user));
+        })
+        .catch((err) => {
+          validationError(err, res);
+        });
     })
     .catch((err) => {
-      validationError(err, res);
       notFoundError(err, res);
-      defaultError(res);
+      validationError(err, res);
     });
 };
 
@@ -57,14 +61,18 @@ const updateAvatar = (req, res) => {
       User.updateOne(
         { _id: req.user._id },
         { $set: { avatar: req.body.avatar } },
-      ).then(() => {
-        User.findById(req.user._id).then((user) => res.send(user));
-      });
+        { runValidators: true }
+      )
+        .then(() => {
+          User.findById(req.user._id).then((user) => res.send(user));
+        })
+        .catch((err) => {
+          validationError(err, res);
+        });
     })
     .catch((err) => {
-      validationError(err, res);
       notFoundError(err, res);
-      defaultError(res);
+      validationError(err, res);
     });
 };
 
