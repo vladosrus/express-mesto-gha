@@ -1,5 +1,11 @@
 {
-  "extends": "airbnb-base"
+  "extends": "airbnb-base",
+  "rules": {
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "linebreak-style": 0,
+    "import/newline-after-import": "off",
+    "no-console": "off",
+    "quotes": [2, "double"],
+    "comma-dangle": "off"
+  }
 }
-
-/*eslint no-underscore-dangle: ["error", { "allow": ["_id"] }]*/
