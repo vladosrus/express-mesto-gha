@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "inspect": "node --inspect app.js"
+    "inspect": "node --inspect app.js",
+    "lint": "npx eslint ."
   },
   "repository": {
     "type": "git",

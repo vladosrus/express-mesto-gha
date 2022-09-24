@@ -1,6 +1,6 @@
-const router = require("express").Router();
+const router = require('express').Router();
+const { deleteCard } = require('../controllers/cards');
+
 module.exports = router;
 
-const { deleteCard } = require("../controllers/cards");
-
-router.delete("/cards/:cardId", deleteCard);
+router.delete('/cards/:cardId', deleteCard);

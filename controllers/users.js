@@ -3,8 +3,8 @@ const {
   validationError,
   notFoundError,
   notFound,
-} = require("../errors/errors");
-const User = require("../models/user");
+} = require('../errors/errors');
+const User = require('../models/user');
 
 const getUsers = (req, res) => {
   User.find({})

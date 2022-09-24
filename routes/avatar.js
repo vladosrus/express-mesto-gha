@@ -1,6 +1,6 @@
-const router = require("express").Router();
+const router = require('express').Router();
+const { updateAvatar } = require('../controllers/users');
+
 module.exports = router;
 
-const { updateAvatar } = require("../controllers/users");
-
-router.patch("/", updateAvatar);
+router.patch('/', updateAvatar);

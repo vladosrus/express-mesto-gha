@@ -3,8 +3,8 @@ const {
   validationError,
   notFoundError,
   notFound,
-} = require("../errors/errors");
-const Card = require("../models/card");
+} = require('../errors/errors');
+const Card = require('../models/card');
 
 const getCards = (req, res) => {
   Card.find({})
@@ -25,11 +25,11 @@ const deleteCard = (req, res) => {
     .orFail(notFound)
     .then(() => {
       Card.remove({ _id: req.params.cardId }).then(() => {
-        res.send({ message: "Карточка удалена" });
+        res.send({ message: 'Карточка удалена' });
       });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         defaultError(res);
         return;
       }
@@ -44,7 +44,7 @@ const likeCard = (req, res) => {
     .then(() => {
       Card.updateOne(
         { _id: req.params.cardId },
-        { $addToSet: { likes: req.user._id } }
+        { $addToSet: { likes: req.user._id } },
       ).then(() => {
         Card.findById(req.params.cardId).then((card) => res.send(card));
       });
@@ -61,7 +61,7 @@ const dislikeCard = (req, res) => {
     .then(() => {
       Card.updateOne(
         { _id: req.params.cardId },
-        { $pull: { likes: req.user._id } }
+        { $pull: { likes: req.user._id } },
       ).then(() => {
         Card.findById(req.params.cardId).then((card) => res.send(card));
       });

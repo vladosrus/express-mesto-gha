@@ -1,7 +1,7 @@
-const router = require("express").Router();
+const router = require('express').Router();
+const { getCards, createCard } = require('../controllers/cards');
+
 module.exports = router;
 
-const { getCards, createCard } = require("../controllers/cards");
-
-router.get("/", getCards);
-router.post("/", createCard);
+router.get('/', getCards);
+router.post('/', createCard);
