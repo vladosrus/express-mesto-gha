@@ -7,7 +7,7 @@ const validationError = (err, res) => {
     res.status(400).send({ message: "Переданы некорректные данные" });
   } else if (err.name === "CastError") {
     res.status(400).send({ message: "Переданы некорректные данные" });
-  } else {
+  } else if (err.name !== "DocumentNotFoundError") {
     defaultError(res);
   }
 };

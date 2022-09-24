@@ -27,8 +27,8 @@ const getUser = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      validationError(err, res);
       notFoundError(err, res);
+      validationError(err, res);
     });
 };
 
