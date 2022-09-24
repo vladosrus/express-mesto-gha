@@ -8,7 +8,7 @@
 ### Запуск проекта
 
 `npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+`npm run dev` — запускает сервер с hot-reload\
 `npm run inspect` — запускает сервер с возможностью отладки приложения в браузере через расширение NIM (Node Inspector Manager)
 
 ### Директории
