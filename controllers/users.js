@@ -26,7 +26,10 @@ const getUser = (req, res) => {
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => notFoundError(err, res));
+    .catch((err) => {
+      notFoundError(err, res);
+      defaultError(res);
+    });
 };
 
 const updateUser = (req, res) => {
