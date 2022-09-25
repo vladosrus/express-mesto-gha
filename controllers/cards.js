@@ -35,7 +35,7 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         notFoundError(res);
-      } else if (err.name === 'CastError' || 'ValidationError') {
+      } else if (err.name === 'CastError' || err.name === 'ValidationError') {
         validationError(res);
       } else {
         defaultError(res);
@@ -54,7 +54,7 @@ const likeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         notFoundError(res);
-      } else if (err.name === 'CastError' || 'ValidationError') {
+      } else if (err.name === 'CastError' || err.name === 'ValidationError') {
         validationError(res);
       } else {
         defaultError(res);
@@ -73,7 +73,7 @@ const dislikeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         notFoundError(res);
-      } else if (err.name === 'CastError' || 'ValidationError') {
+      } else if (err.name === 'CastError' || err.name === 'ValidationError') {
         validationError(res);
       } else {
         defaultError(res);
