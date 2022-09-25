@@ -30,4 +30,4 @@ app.use(bodyParser.json());
 app.use('/', routerUsers);
 app.use('/', routerCards);
 
-app.listen(PORT, () => console.log('Готов'));
+app.listen(PORT);

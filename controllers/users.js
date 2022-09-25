@@ -17,7 +17,13 @@ const createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
-    .catch((err) => validationError(err, res));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
+    });
 };
 
 const getUser = (req, res) => {
@@ -26,42 +32,52 @@ const getUser = (req, res) => {
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => notFoundError(err, res));
+    .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        notFoundError(res);
+      } else if (err.name === 'CastError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
+    });
 };
 
 const updateUser = (req, res) => {
-  User.findById(req.user._id)
+  User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { name: req.body.name, about: req.body.about } },
+    { new: true, runValidators: true },
+  )
     .orFail(notFound)
-    .then(() => {
-      User.updateOne(
-        { _id: req.user._id },
-        { $set: { name: req.body.name, about: req.body.about } },
-      ).then(() => {
-        User.findById(req.user._id).then((user) => res.send(user));
-      });
-    })
+    .then((user) => res.send(user))
     .catch((err) => {
-      validationError(err, res);
-      notFoundError(err, res);
-      defaultError(res);
+      if (err.name === 'DocumentNotFoundError') {
+        notFoundError(res);
+      } else if (err.name === 'CastError' || 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
     });
 };
 
 const updateAvatar = (req, res) => {
-  User.findById(req.user._id)
+  User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { avatar: req.body.avatar } },
+    { new: true, runValidators: true },
+  )
     .orFail(notFound)
-    .then(() => {
-      User.updateOne(
-        { _id: req.user._id },
-        { $set: { avatar: req.body.avatar } },
-      ).then(() => {
-        User.findById(req.user._id).then((user) => res.send(user));
-      });
-    })
+    .then((user) => res.send(user))
     .catch((err) => {
-      validationError(err, res);
-      notFoundError(err, res);
-      defaultError(res);
+      if (err.name === 'DocumentNotFoundError') {
+        notFoundError(res);
+      } else if (err.name === 'CastError' || 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
     });
 };
 
