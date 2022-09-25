@@ -1,25 +1,18 @@
-const defaultError = (res) => {
-  res.status(500).send({ message: "Произошла ошибка" });
-};
-
-const validationError = (err, res) => {
-  if (err.name === "ValidationError") {
-    res.status(400).send({ message: "Переданы некорректные данные" });
-  } else if (err.name === "CastError") {
-    res.status(400).send({ message: "Переданы некорректные данные" });
-  } else if (err.name !== "DocumentNotFoundError") {
-    defaultError(res);
-  }
-};
+const { BAD_REQUEST = 400, NOT_FOUND = 404, INTERNAL_SERVER_ERROR = 500 } = process.env;
 
 const notFound = new Error();
-notFound.name = "DocumentNotFoundError";
-notFound.message = "Объект c указанным _id не найден";
+notFound.name = 'DocumentNotFoundError';
 
-const notFoundError = (err, res) => {
-  if (err.name === "DocumentNotFoundError") {
-    res.status(404).send({ message: err.message });
-  }
+const validationError = (res) => {
+  res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
+};
+
+const notFoundError = (res) => {
+  res.status(NOT_FOUND).send({ message: 'Объект c указанным _id не найден' });
+};
+
+const defaultError = (res) => {
+  res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
 };
 
 module.exports = {

@@ -3,8 +3,8 @@ const {
   validationError,
   notFoundError,
   notFound,
-} = require("../errors/errors");
-const User = require("../models/user");
+} = require('../errors/errors');
+const User = require('../models/user');
 
 const getUsers = (req, res) => {
   User.find({})
@@ -17,7 +17,13 @@ const createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
-    .catch((err) => validationError(err, res));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
+    });
 };
 
 const getUser = (req, res) => {
@@ -27,52 +33,51 @@ const getUser = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      notFoundError(err, res);
-      validationError(err, res);
+      if (err.name === 'DocumentNotFoundError') {
+        notFoundError(res);
+      } else if (err.name === 'CastError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
     });
 };
 
 const updateUser = (req, res) => {
-  User.findById(req.user._id)
+  User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { name: req.body.name, about: req.body.about } },
+    { new: true, runValidators: true },
+  )
     .orFail(notFound)
-    .then(() => {
-      User.updateOne(
-        { _id: req.user._id },
-        { $set: { name: req.body.name, about: req.body.about } },
-        { runValidators: true }
-      )
-        .then(() => {
-          User.findById(req.user._id).then((user) => res.send(user));
-        })
-        .catch((err) => {
-          validationError(err, res);
-        });
-    })
+    .then((user) => res.send(user))
     .catch((err) => {
-      notFoundError(err, res);
-      validationError(err, res);
+      if (err.name === 'DocumentNotFoundError') {
+        notFoundError(res);
+      } else if (err.name === 'CastError' || 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
     });
 };
 
 const updateAvatar = (req, res) => {
-  User.findById(req.user._id)
+  User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { avatar: req.body.avatar } },
+    { new: true, runValidators: true },
+  )
     .orFail(notFound)
-    .then(() => {
-      User.updateOne(
-        { _id: req.user._id },
-        { $set: { avatar: req.body.avatar } },
-        { runValidators: true }
-      )
-        .then(() => {
-          User.findById(req.user._id).then((user) => res.send(user));
-        })
-        .catch((err) => {
-          validationError(err, res);
-        });
-    })
+    .then((user) => res.send(user))
     .catch((err) => {
-      notFoundError(err, res);
-      validationError(err, res);
+      if (err.name === 'DocumentNotFoundError') {
+        notFoundError(res);
+      } else if (err.name === 'CastError' || 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
     });
 };
 

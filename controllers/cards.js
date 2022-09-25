@@ -3,8 +3,8 @@ const {
   validationError,
   notFoundError,
   notFound,
-} = require("../errors/errors");
-const Card = require("../models/card");
+} = require('../errors/errors');
+const Card = require('../models/card');
 
 const getCards = (req, res) => {
   Card.find({})
@@ -17,60 +17,67 @@ const createCard = (req, res) => {
 
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
-    .catch((err) => validationError(err, res));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
+    });
 };
 
 const deleteCard = (req, res) => {
-  Card.findById(req.params.cardId)
+  Card.findByIdAndRemove(req.params.cardId)
     .orFail(notFound)
     .then(() => {
-      Card.remove({ _id: req.params.cardId })
-        .then(() => {
-          res.send({ message: "Карточка удалена" });
-        })
-        .catch((err) => validationError(err, res));
+      res.send({ message: 'Карточка удалена' });
     })
     .catch((err) => {
-      notFoundError(err, res);
-      validationError(err, res);
+      if (err.name === 'DocumentNotFoundError') {
+        notFoundError(res);
+      } else if (err.name === 'CastError' || 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
     });
 };
 
 const likeCard = (req, res) => {
-  Card.findById(req.params.cardId)
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true, runValidators: true },
+  )
     .orFail(notFound)
-    .then(() => {
-      Card.updateOne(
-        { _id: req.params.cardId },
-        { $addToSet: { likes: req.user._id } }
-      )
-        .then(() => {
-          Card.findById(req.params.cardId).then((card) => res.send(card));
-        })
-        .catch((err) => validationError(err, res));
-    })
+    .then((card) => res.send(card))
     .catch((err) => {
-      notFoundError(err, res);
-      validationError(err, res);
+      if (err.name === 'DocumentNotFoundError') {
+        notFoundError(res);
+      } else if (err.name === 'CastError' || 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
     });
 };
 
 const dislikeCard = (req, res) => {
-  Card.findById(req.params.cardId)
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true, runValidators: true },
+  )
     .orFail(notFound)
-    .then(() => {
-      Card.updateOne(
-        { _id: req.params.cardId },
-        { $pull: { likes: req.user._id } }
-      )
-        .then(() => {
-          Card.findById(req.params.cardId).then((card) => res.send(card));
-        })
-        .catch((err) => validationError(err, res));
-    })
+    .then((card) => res.send(card))
     .catch((err) => {
-      notFoundError(err, res);
-      validationError(err, res);
+      if (err.name === 'DocumentNotFoundError') {
+        notFoundError(res);
+      } else if (err.name === 'CastError' || 'ValidationError') {
+        validationError(res);
+      } else {
+        defaultError(res);
+      }
     });
 };
 
