@@ -14,11 +14,9 @@ const login = (req, res, next) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        JWT_SECRET_KEY,
-        { expiresIn: '7d' },
-      );
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET_KEY, {
+        expiresIn: '7d',
+      });
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
@@ -41,17 +39,27 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
 
-  bcrypt.hash(password, 10)
+  bcrypt
+    .hash(password, 10)
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
     }))
 
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.message === 'Illegal arguments: undefined, number') {
+      if (
+        err.name === 'ValidationError'
+        || err.message === 'Illegal arguments: undefined, number'
+      ) {
         throw new BadRequestError('Переданы некорректные данные');
       } else if (err.code === 11000) {
-        throw new ConflictError('Пользователь с таким email уже зарегистрирован');
+        throw new ConflictError(
+          'Пользователь с таким email уже зарегистрирован',
+        );
       } else {
         next(err);
       }

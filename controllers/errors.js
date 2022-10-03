@@ -1,5 +1,7 @@
-const requestError = (req, res) => {
-  res.status(404).send({ message: 'Неправильный путь' });
+const NotFoundError = require('../errors/notFoundError');
+
+const requestError = (req, res, next) => {
+  next(new NotFoundError('Неправильный путь'));
 };
 
 module.exports = requestError;

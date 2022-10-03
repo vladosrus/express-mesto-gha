@@ -11,7 +11,6 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 // Мидлвэры
-const auth = require('./middlewares/auth');
 const error = require('./middlewares/error');
 
 // Роутеры
@@ -31,12 +30,13 @@ app.use(cookieParser());
 
 app.use('/', routerSignUp);
 app.use('/', routerSignIn);
-app.use('/', auth, routerUsers);
-app.use('/', auth, routerCards);
+app.use('/', routerUsers);
+app.use('/', routerCards);
 
 // Обработка неправильного пути
 app.use('*', routerError);
 
+// Централизованный обработчик ошибок (основные ошибки + celebrate)
 app.use(error);
 
-app.listen(PORT, () => console.log('Соединение установлено'));
+app.listen(PORT);

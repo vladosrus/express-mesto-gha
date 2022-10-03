@@ -1,8 +1,11 @@
-const { INTERNAL_SERVER_ERROR } = process.env;
+const { INTERNAL_SERVER_ERROR, BAD_REQUEST } = process.env;
+const { isCelebrateError } = require('celebrate');
 
-module.exports = (err, req, res) => {
-  console.log(err);
-  if (err.statusCode) {
+// eslint-disable-next-line no-unused-vars
+module.exports = (err, req, res, next) => {
+  if (isCelebrateError(err)) {
+    res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
+  } else if (err.statusCode) {
     res.status(err.statusCode).send({ message: err.message });
   } else {
     res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
