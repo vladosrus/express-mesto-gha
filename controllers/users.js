@@ -23,6 +23,7 @@ const login = (req, res, next) => {
           httpOnly: true,
           sameSite: true,
         })
+        .send({ message: 'Авторизация прошла успешно', token })
         .end();
     })
     .catch(next);
@@ -48,7 +49,7 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-
+    .then((user) => User.findOne({ email: user.email }))
     .then((user) => res.send(user))
     .catch((err) => {
       if (
