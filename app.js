@@ -9,6 +9,7 @@ const { PORT = 3000, MONGODB_URL = 'mongodb://localhost:27017/mestodb' } = proce
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 
 // Мидлвэры
 const error = require('./middlewares/error');
@@ -37,6 +38,7 @@ app.use('/', routerCards);
 app.use('*', routerError);
 
 // Централизованный обработчик ошибок (основные ошибки + celebrate)
+app.use(errors());
 app.use(error);
 
 app.listen(PORT);
