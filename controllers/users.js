@@ -7,7 +7,7 @@ const ConflictError = require('../errors/conflictError');
 const BadRequestError = require('../errors/badRequestError');
 const NotFoundError = require('../errors/notFoundError');
 
-const { JWT_SECRET_KEY } = process.env;
+const { JWT_SECRET_KEY = '96b89123393ce1397adc6912af9a95f43990e6db1b6c5d5f7c40444bd9e0fe52' } = process.env;
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
