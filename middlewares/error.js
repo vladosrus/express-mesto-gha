@@ -1,4 +1,4 @@
-const { INTERNAL_SERVER_ERROR, BAD_REQUEST } = process.env;
+const { INTERNAL_SERVER_ERROR = 500, BAD_REQUEST = 400 } = process.env;
 const { isCelebrateError } = require('celebrate');
 
 // eslint-disable-next-line no-unused-vars

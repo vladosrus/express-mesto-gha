@@ -1,4 +1,4 @@
-const { UNAUTHORIZED } = process.env;
+const { UNAUTHORIZED = 401 } = process.env;
 
 class UnauthorizedError extends Error {
   constructor(message) {
