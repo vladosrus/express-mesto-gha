@@ -7,7 +7,9 @@ const ConflictError = require('../errors/conflictError');
 const BadRequestError = require('../errors/badRequestError');
 const NotFoundError = require('../errors/notFoundError');
 
-const { JWT_SECRET_KEY = '96b89123393ce1397adc6912af9a95f43990e6db1b6c5d5f7c40444bd9e0fe52' } = process.env;
+const {
+  JWT_SECRET_KEY = '96b89123393ce1397adc6912af9a95f43990e6db1b6c5d5f7c40444bd9e0fe52',
+} = process.env;
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -49,23 +51,23 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => User.findOne({ email: user.email }))
-    .then((user) => res.send(user))
+    .then((user) => res.send({
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    }))
     .catch((err) => {
-      if (
-        err.name === 'ValidationError'
-        || err.message === 'Illegal arguments: undefined, number'
-      ) {
-        throw new BadRequestError('Переданы некорректные данные');
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Переданы некорректные данные'));
       } else if (err.code === 11000) {
-        throw new ConflictError(
-          'Пользователь с таким email уже зарегистрирован',
+        next(
+          new ConflictError('Пользователь с таким email уже зарегистрирован'),
         );
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const getUserById = (req, res, next) => {
@@ -76,12 +78,11 @@ const getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const getUser = (req, res, next) => {
@@ -92,12 +93,11 @@ const getUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const updateUser = (req, res, next) => {
@@ -110,12 +110,11 @@ const updateUser = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const updateAvatar = (req, res, next) => {
@@ -128,12 +127,11 @@ const updateAvatar = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports = {
