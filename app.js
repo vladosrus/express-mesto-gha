@@ -13,6 +13,7 @@ const { errors } = require('celebrate');
 
 // Мидлвэры
 const error = require('./middlewares/error');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 // Роутеры
 const routerUsers = require('./routes/users');
@@ -29,6 +30,9 @@ mongoose.connect(MONGODB_URL, {
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+// Логгер запросов
+app.use(requestLogger);
+
 app.use('/', routerSignUp);
 app.use('/', routerSignIn);
 app.use('/', routerUsers);
@@ -36,6 +40,9 @@ app.use('/', routerCards);
 
 // Обработка неправильного пути
 app.use('*', routerError);
+
+// Логгер ошибок
+app.use(errorLogger);
 
 // Централизованный обработчик ошибок (основные ошибки + celebrate)
 app.use(errors());
